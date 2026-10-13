@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+project_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+for command_name in ruby bundle psql pnpm; do
+  if ! command -v "$command_name" >/dev/null 2>&1; then
+    echo "Missing required command: $command_name" >&2
+    exit 1
+  fi
+done
+
+echo "Installing Rails dependencies..."
+cd "$project_root/apps/api"
+bundle check >/dev/null 2>&1 || bundle install
+
+echo "Preparing PostgreSQL databases..."
+bin/rails db:prepare
+
+echo "Installing Next.js dependencies..."
+cd "$project_root/apps/web"
+pnpm install
+
+echo "AutoCompass is ready. Run bin/dev from the repository root."

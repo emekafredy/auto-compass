@@ -1,0 +1,45 @@
+# Local planning and agent guidance
+/AGENTS.md
+/ARCHITECTURE.md
+/docs
+
+# macOS and local environment
+.DS_Store
+.env
+.env.*
+!.env.example
+
+# Rails
+/apps/api/.bundle/
+/apps/api/config/master.key
+/apps/api/log/*
+!/apps/api/log/.keep
+/apps/api/tmp/*
+!/apps/api/tmp/.keep
+!/apps/api/tmp/pids/
+!/apps/api/tmp/pids/.keep
+/apps/api/storage/*
+!/apps/api/storage/.keep
+/apps/api/public/assets/
+
+# Next.js
+/apps/web/node_modules/
+/apps/web/.next/
+/apps/web/out/
+/apps/web/build/
+/apps/web/coverage/
+/apps/web/.vercel/
+/apps/web/.pnp
+/apps/web/.pnp.*
+/apps/web/.yarn/*
+!/apps/web/.yarn/patches/
+!/apps/web/.yarn/plugins/
+!/apps/web/.yarn/releases/
+!/apps/web/.yarn/versions/
+/apps/web/*.tsbuildinfo
+/apps/web/next-env.d.ts
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+*.pem

@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+project_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+environment_file="$project_root/.env"
+
+if [[ ! -f "$environment_file" ]]; then
+  echo "Missing $environment_file. Add WEB_PORT and API_PORT before starting AutoCompass." >&2
+  exit 1
+fi
+
+set -a
+source "$environment_file"
+set +a
+
+: "${API_PORT:?Set API_PORT in .env}"
+: "${WEB_PORT:?Set WEB_PORT in .env}"
+
+api_port="$API_PORT"
+web_port="$WEB_PORT"
+
+if command -v pg_isready >/dev/null 2>&1 && ! pg_isready -q; then
+  echo "PostgreSQL is not ready. Start it before running AutoCompass." >&2
+  exit 1
+fi
+
+(
+  cd "$project_root/apps/api"
+  exec bin/rails server --port "$api_port"
+) &
+api_pid=$!
+
+cleanup() {
+  kill "$api_pid" >/dev/null 2>&1 || true
+  wait "$api_pid" >/dev/null 2>&1 || true
+}
+
+trap cleanup EXIT INT TERM
+
+cd "$project_root/apps/web"
+pnpm dev --port "$web_port"
